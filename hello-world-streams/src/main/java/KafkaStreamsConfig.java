@@ -24,8 +24,11 @@ public class KafkaStreamsConfig {
     private final String oauthAccessToken;
     private final String oauthRefreshToken;
     private final String oauthTokenEndpointUri;
+    private final String saslMechanism;
+    private final String saslUser;
+    private final String saslPassword;
 
-    public KafkaStreamsConfig(String bootstrapServers, String applicationId, String sourceTopic, String targetTopic, String trustStorePassword, String trustStorePath, String keyStorePassword, String keyStorePath, String oauthClientId, String oauthClientSecret, String oauthAccessToken, String oauthRefreshToken, String oauthTokenEndpointUri) {
+    public KafkaStreamsConfig(String bootstrapServers, String applicationId, String sourceTopic, String targetTopic, String trustStorePassword, String trustStorePath, String keyStorePassword, String keyStorePath, String oauthClientId, String oauthClientSecret, String oauthAccessToken, String oauthRefreshToken, String oauthTokenEndpointUri, String saslMechanism, String saslUser, String saslPassword) {
         this.bootstrapServers = bootstrapServers;
         this.applicationId = applicationId;
         this.sourceTopic = sourceTopic;
@@ -39,6 +42,9 @@ public class KafkaStreamsConfig {
         this.oauthAccessToken = oauthAccessToken;
         this.oauthRefreshToken = oauthRefreshToken;
         this.oauthTokenEndpointUri = oauthTokenEndpointUri;
+        this.saslMechanism = saslMechanism;
+        this.saslUser = saslUser;
+        this.saslPassword = saslPassword;
     }
 
     public static KafkaStreamsConfig fromEnv() {
@@ -55,8 +61,11 @@ public class KafkaStreamsConfig {
         String oauthAccessToken = System.getenv("OAUTH_ACCESS_TOKEN");
         String oauthRefreshToken = System.getenv("OAUTH_REFRESH_TOKEN");
         String oauthTokenEndpointUri = System.getenv("OAUTH_TOKEN_ENDPOINT_URI");
+        String saslMechanism = System.getenv("SASL_MECHANISM");
+        String saslUser = System.getenv("SASL_USER");
+        String saslPassword = System.getenv("SASL_PASSWORD");
 
-        return new KafkaStreamsConfig(bootstrapServers, applicationId, sourceTopic, targetTopic, trustStorePassword, trustStorePath, keyStorePassword, keyStorePath, oauthClientId, oauthClientSecret, oauthAccessToken, oauthRefreshToken, oauthTokenEndpointUri);
+        return new KafkaStreamsConfig(bootstrapServers, applicationId, sourceTopic, targetTopic, trustStorePassword, trustStorePath, keyStorePassword, keyStorePath, oauthClientId, oauthClientSecret, oauthAccessToken, oauthRefreshToken, oauthTokenEndpointUri, saslMechanism, saslUser, saslPassword);
     }
 
     public static Properties createProperties(KafkaStreamsConfig config) {
@@ -91,6 +100,20 @@ public class KafkaStreamsConfig {
             props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL".equals(props.getProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG)) ? "SASL_SSL" : "SASL_PLAINTEXT");
             props.put(SaslConfigs.SASL_MECHANISM, "OAUTHBEARER");
             props.put(SaslConfigs.SASL_LOGIN_CALLBACK_HANDLER_CLASS, "io.strimzi.kafka.oauth.client.JaasClientOauthLoginCallbackHandler");
+        }
+
+        if ((config.getSaslMechanism() != null) && (config.getSaslUser() !=  null) && (config.getSaslPassword() !=  null)){
+            if (config.getSaslMechanism().equals("PLAIN")){
+                log.info("Configuring SASL-PLAIN");
+                props.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + config.getSaslUser() + "\" password=\""+config.getSaslPassword()+"\";");
+                props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL".equals(props.getProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG)) ? "SASL_SSL" : "SASL_PLAINTEXT");
+                props.put(SaslConfigs.SASL_MECHANISM,config.getSaslMechanism());
+            } else if (config.getSaslMechanism().equals("SCRAM-SHA-512")){
+                log.info("Configuring SASL-SCRAM");
+                props.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"" + config.getSaslUser() + "\" password=\""+config.getSaslPassword()+"\";");
+                props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL".equals(props.getProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG)) ? "SASL_SSL" : "SASL_PLAINTEXT");
+                props.put(SaslConfigs.SASL_MECHANISM,config.getSaslMechanism());
+            }
         }
 
         return props;
@@ -146,4 +169,17 @@ public class KafkaStreamsConfig {
     public String getOauthTokenEndpointUri() {
         return oauthTokenEndpointUri;
     }
+
+    public String getSaslMechanism(){
+        return saslMechanism;
+    }
+
+    public String getSaslUser(){
+        return saslUser;
+    }
+
+    public String getSaslPassword(){
+        return saslPassword;
+    }
+
 }
