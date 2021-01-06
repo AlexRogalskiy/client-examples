@@ -1,0 +1,1 @@
+package strimzi.io.springbootkafkaavroconsumer.config;

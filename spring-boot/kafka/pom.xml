@@ -102,5 +102,6 @@
 
     <modules>
         <module>avro-producer</module>
+        <module>avro-consumer</module>
     </modules>
 </project>
