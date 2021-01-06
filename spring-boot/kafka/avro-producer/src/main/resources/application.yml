@@ -18,7 +18,13 @@ spring:
       sasl.login.callback.handler.class: io.strimzi.kafka.oauth.client.JaasClientOauthLoginCallbackHandler
       security.protocol: SASL_SSL
 
-      schema.registry.url: ${REGISTRY_URL}  
+      #confluent registry
+      #schema.registry.url: ${REGISTRY_URL}
+      
+      #apicurio in compat mode
+      apicurio.registry.url: ${REGISTRY_URL}
+      apicurio.registry.as-confluent: true
+        
       #basic.auth.credentials.source: USER_INFO   (4)  
       #schema.registry.basic.auth.user.info: sr_ccloud_key:sr_ccloud_key   (5) 
     #consumer:
@@ -28,7 +34,8 @@ spring:
     #  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      #value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: io.apicurio.registry.utils.serde.AvroKafkaSerializer
     template:
       default-topic:
 logging:
