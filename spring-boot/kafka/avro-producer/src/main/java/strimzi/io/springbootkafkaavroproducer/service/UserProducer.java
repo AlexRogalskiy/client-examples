@@ -37,9 +37,15 @@ public class UserProducer {
 		  List<String> givenList = Arrays.asList("hans", "peter", "paul","mary","joe");
 		  Random rand = new Random();
 		  String randomElement = givenList.get(rand.nextInt(givenList.size()));
+		  User user = User.newBuilder()
+				  .setName(randomElement)
+				  .setAge(rand.ints(10, 100).findFirst().getAsInt())
+				  .build();
+		  /*
 		  User user = new User();
 		  user.setName(randomElement);
 		  user.setAge(rand.ints(10, 100).findFirst().getAsInt());
+		  */
 		  this.sendMessage(user);
 		
 	  }
