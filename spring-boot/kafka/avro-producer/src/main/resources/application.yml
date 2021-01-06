@@ -24,6 +24,7 @@ spring:
       #apicurio in compat mode
       apicurio.registry.url: ${REGISTRY_URL}
       apicurio.registry.as-confluent: true
+      apicurio.registry.global-id: io.apicurio.registry.utils.serde.strategy.GetOrCreateIdStrategy
         
       #basic.auth.credentials.source: USER_INFO   (4)  
       #schema.registry.basic.auth.user.info: sr_ccloud_key:sr_ccloud_key   (5) 
