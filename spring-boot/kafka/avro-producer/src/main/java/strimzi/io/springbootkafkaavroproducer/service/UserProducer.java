@@ -27,7 +27,7 @@ public class UserProducer {
 	  }
 
 	  void sendMessage(User user) {
-	    this.kafkaTemplate.send(this.TOPIC, user.getName(), user);  
+	    this.kafkaTemplate.send(this.TOPIC, (String) user.getName(), user);  
 	    log.info(String.format("Produced user -> %s", user));
 	  }
 	  
