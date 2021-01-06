@@ -10,7 +10,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import strimzi.io.springbootkafkaavroproducer.User;
+import strimzi.io.avro.User;
 
 @Service
 public class UserProducer {

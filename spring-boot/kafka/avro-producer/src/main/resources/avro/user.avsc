@@ -1,5 +1,5 @@
 {
-  "namespace": "strimzi.io.springbootkafkaavroproducer",   
+  "namespace": "strimzi.io.avro",   
   "type": "record",
   "name": "User",
   "fields": [

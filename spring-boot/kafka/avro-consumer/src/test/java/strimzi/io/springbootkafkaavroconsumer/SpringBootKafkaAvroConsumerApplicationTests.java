@@ -1,10 +1,10 @@
-package strimzi.io.springbootkafkaavroproducer;
+package strimzi.io.springbootkafkaavroconsumer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootKafkaAvroProducerApplicationTests {
+class SpringBootKafkaAvroConsumerApplicationTests {
 
 	@Test
 	void contextLoads() {
