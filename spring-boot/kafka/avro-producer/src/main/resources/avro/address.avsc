@@ -1,15 +1,16 @@
 {
   "namespace": "strimzi.io.avro",   
   "type": "record",
-  "name": "User",
+  "name": "Address",
+  "doc": "An address object",
   "fields": [
     {
-      "name": "name",
+      "name": "street",
       "type": "string",
       "avro.java.string": "String"
     },
     {
-      "name": "age",
+      "name": "houseno",
       "type": "int"
     }
   ]

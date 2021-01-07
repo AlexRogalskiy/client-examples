@@ -40,12 +40,8 @@ public class UserProducer {
 		  User user = User.newBuilder()
 				  .setName(randomElement)
 				  .setAge(rand.ints(10, 100).findFirst().getAsInt())
+				  .setAmount(rand.ints(100, 10000).findFirst().getAsInt())
 				  .build();
-		  /*
-		  User user = new User();
-		  user.setName(randomElement);
-		  user.setAge(rand.ints(10, 100).findFirst().getAsInt());
-		  */
 		  this.sendMessage(user);
 		
 	  }

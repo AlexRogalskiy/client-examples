@@ -15,6 +15,7 @@
 		<java.version>11</java.version>
 		<avro.version>1.8.2</avro.version>
 		<strimzi-oauth-callback.version>0.6.1</strimzi-oauth-callback.version>
+		<registry.version>1.3.2.Final</registry.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -60,49 +61,28 @@
 			<artifactId>kafka-oauth-client</artifactId>
 			<version>${strimzi-oauth-callback.version}</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>io.apicurio</groupId>
-		    <artifactId>apicurio-registry-utils-serde</artifactId>
-		    <version>1.3.2.Final</version>
-		</dependency>		
+			<groupId>io.apicurio</groupId>
+			<artifactId>apicurio-registry-utils-serde</artifactId>
+			<version>${registry.version}</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-common -->
 		<dependency>
-		    <groupId>org.glassfish.jersey.core</groupId>
-		    <artifactId>jersey-common</artifactId>
-		    <version>2.33</version>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-common</artifactId>
+			<version>2.33</version>
 		</dependency>
 
-		<!-- dependencies when using confluent schema-registry-->
-		<!-- 
-		<dependency>
-			<groupId>io.confluent</groupId>
-
-			<artifactId>kafka-schema-registry-client</artifactId>
-			<version>5.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro</artifactId>
-			<version>1.8.2</version>
-		</dependency>
-		<dependency>
-			<groupId>io.confluent</groupId>
-			<artifactId>kafka-avro-serializer</artifactId>
-			<version>5.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.confluent</groupId>
-			<artifactId>kafka-streams-avro-serde</artifactId>
-			<version>5.3.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		 -->
+		<!-- dependencies when using confluent schema-registry -->
+		<!-- <dependency> <groupId>io.confluent</groupId> <artifactId>kafka-schema-registry-client</artifactId> 
+			<version>5.3.0</version> </dependency> <dependency> <groupId>org.apache.avro</groupId> 
+			<artifactId>avro</artifactId> <version>1.8.2</version> </dependency> <dependency> 
+			<groupId>io.confluent</groupId> <artifactId>kafka-avro-serializer</artifactId> 
+			<version>5.2.1</version> </dependency> <dependency> <groupId>io.confluent</groupId> 
+			<artifactId>kafka-streams-avro-serde</artifactId> <version>5.3.0</version> 
+			<exclusions> <exclusion> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> 
+			</exclusion> </exclusions> </dependency> -->
 
 	</dependencies>
 
@@ -112,27 +92,85 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro-maven-plugin</artifactId>
-                <version>${avro.version}</version>
-                <executions>
-                    <execution>
-                        <id>schemas</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>schema</goal>
-                            <goal>protocol</goal>
-                            <goal>idl-protocol</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>		</plugins>
+			<plugin>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro-maven-plugin</artifactId>
+				<version>${avro.version}</version>
+				<executions>
+					<execution>
+						<id>schemas</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>schema</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
+							<outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
 	</build>
+	<profiles>
+
+		<profile>
+			<id>test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.apicurio</groupId>
+						<artifactId>apicurio-registry-maven-plugin</artifactId>
+						<version>${registry.version}</version>
+						<executions>
+							<execution>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>test-update</goal>
+								</goals>
+								<configuration>
+									<registryUrl>http://schema-registry01.witcom.services/api</registryUrl>
+									<artifactType>AVRO</artifactType>
+									<artifacts>
+										<avro-sample-value>${project.basedir}/src/main/resources/avro/user.avsc</avro-sample-value>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>upload</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.apicurio</groupId>
+						<artifactId>apicurio-registry-maven-plugin</artifactId>
+						<version>${registry.version}</version>
+						<executions>
+							<execution>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>register</goal>
+								</goals>
+								<configuration>
+									<registryUrl>http://schema-registry01.witcom.services/api</registryUrl>
+									<artifactType>AVRO</artifactType>
+									<artifacts>
+										<avro-sample-value>${project.basedir}/src/main/resources/avro/user.avsc</avro-sample-value>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 
 	<repositories>
 		<!-- other maven repositories the project -->

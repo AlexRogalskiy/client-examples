@@ -1,15 +1,8 @@
 package strimzi.io.springbootkafkaavroconsumer.service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import strimzi.io.avro.User;
@@ -21,10 +14,10 @@ public class UserConsumer {
 	  @Value("${topic.name}") 
 	  private String TOPIC;
 	  
-	  @KafkaListener(topics = "avro-sample", groupId = "avro-sample")   
+	  @KafkaListener(topics = "${topic.name}", groupId = "${spring.kafka.consumer.group-id}")   
 	  public void consume(ConsumerRecord<String, User> record) {
-		  //User user = record.value();
-		  log.info(String.format("Consumed message -> %s", record.value()));
+		  User user = record.value();
+		  log.info(String.format("Consumed message -> %s", user.toString()));
 	  }
 
 }

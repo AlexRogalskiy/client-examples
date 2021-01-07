@@ -13,6 +13,8 @@
 **/.factorypath
 /target/
 
+**/.attach*
+
 **/dependency-reduced-pom.xml
 
 # VSCode
