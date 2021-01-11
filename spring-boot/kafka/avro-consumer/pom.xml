@@ -132,7 +132,7 @@
 									<goal>download</goal>
 								</goals>
 								<configuration>
-									<registryUrl>http://schema-registry01.witcom.services/api</registryUrl>
+									<registryUrl>${env.REGISTRY_URL}</registryUrl>
 									<ids>
 										<param1>avro-sample-value</param1>
 									</ids>

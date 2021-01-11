@@ -27,18 +27,12 @@ spring:
       apicurio.registry.global-id: io.apicurio.registry.utils.serde.strategy.FindLatestIdStrategy
       apicurio.registry.use-specific-avro-reader: true
         
-      #basic.auth.credentials.source: USER_INFO   (4)  
-      #schema.registry.basic.auth.user.info: sr_ccloud_key:sr_ccloud_key   (5) 
     consumer:
       group-id: avro-sample
     #  auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       #value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       value-deserializer: io.apicurio.registry.utils.serde.AvroKafkaDeserializer
-    #producer:
-    #  key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    #  #value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-    #  value-serializer: io.apicurio.registry.utils.serde.AvroKafkaSerializer
     template:
       default-topic:
 logging:

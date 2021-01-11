@@ -16,7 +16,11 @@
     {
       "name": "amount",
       "type": "int"
+    },
+    {
+      "name": "anothervalue",
+      "type": "int",
+      "default":1
     }
   ]
 }
-

@@ -130,7 +130,7 @@
 									<goal>test-update</goal>
 								</goals>
 								<configuration>
-									<registryUrl>http://schema-registry01.witcom.services/api</registryUrl>
+									<registryUrl>${env.REGISTRY_URL}</registryUrl>
 									<artifactType>AVRO</artifactType>
 									<artifacts>
 										<avro-sample-value>${project.basedir}/src/main/resources/avro/user.avsc</avro-sample-value>
@@ -157,7 +157,7 @@
 									<goal>register</goal>
 								</goals>
 								<configuration>
-									<registryUrl>http://schema-registry01.witcom.services/api</registryUrl>
+									<registryUrl>${env.REGISTRY_URL}</registryUrl>
 									<artifactType>AVRO</artifactType>
 									<artifacts>
 										<avro-sample-value>${project.basedir}/src/main/resources/avro/user.avsc</avro-sample-value>
